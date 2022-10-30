@@ -11,16 +11,19 @@ def init(width: int = 1000, height: int = 1000) -> None:
     global GL
     GL = PyGL(width, height)
 
-@checkInstanceOnCall
-def conwaysGameOfLife(initialData = None):
-    data = [[False for y in range(GL.height)] for x in range(GL.width)]
+def conwaysGameOfLife(pixelSize = 1, width = 250, height = 250, initialData = None):
+    init(width, height)
+    data = [[False for y in range(int(height / pixelSize))] for x in range(int(width / pixelSize))]
+
+    if width % pixelSize != 0 or height % pixelSize != 0:
+        raise Exception("Pixel size must be a factor of width and height")
 
     if initialData:
         for x, y in initialData:
             data[x - 1][y - 1] = True
     else:
-        for x in range(GL.width):
-            for y in range(GL.height):
+        for x in range(int(width / pixelSize)):
+            for y in range(int(height / pixelSize)):
                 if random() < 0.1:
                     data[x][y] = True
 
@@ -28,12 +31,12 @@ def conwaysGameOfLife(initialData = None):
 
     running = True
     while running:
-        for x in range(GL.width):
-            for y in range(GL.height):
+        for x in range(int(width / pixelSize)):
+            for y in range(int(height / pixelSize)):
                 if data[x][y]:
-                    GL.pixel(x, y, (1.0, 1.0, 1.0, 1.0))
+                    GL.pixel(x * pixelSize, y * pixelSize, (1.0, 1.0, 1.0, 1.0), pixelSize)
                 else:
-                    GL.pixel(x, y, (0.0, 0.0, 0.0, 1.0))
+                    GL.pixel(x * pixelSize, y * pixelSize, (0.0, 0.0, 0.0, 1.0), pixelSize)
 
         pygame.display.flip()
 
@@ -42,8 +45,8 @@ def conwaysGameOfLife(initialData = None):
                 running = False
                 GL.enableScissor(False)
 
-        for x in range(GL.width):
-            for y in range(GL.height):
+        for x in range(int(width / pixelSize)):
+            for y in range(int(height / pixelSize)):
                 neighbors = checkNeighbours(x, y, data)
                 
                 if data[x][y]:
@@ -66,10 +69,10 @@ def checkNeighbours(x, y, data):
             if i == 0 and j == 0: continue
             xOffset, yOffset = x + i, y + j
 
-            if xOffset >= GL.width:
+            if xOffset >= len(data):
                 xOffset = 0
 
-            if yOffset >= GL.height:
+            if yOffset >= len(data[0]):
                 yOffset = 0
 
             if data[xOffset][yOffset]:
