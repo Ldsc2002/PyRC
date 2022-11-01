@@ -1,5 +1,6 @@
 from PyGL.lib.PyGL import *
 from random import *
+from copy import deepcopy
 
 GL = None
 
@@ -31,8 +32,8 @@ def conwaysGameOfLife(pixelSize = 1, width = 250, height = 250, initialData = No
 
     running = True
     while running:
-        for x in range(int(width / pixelSize)):
-            for y in range(int(height / pixelSize)):
+        for x in range(len(data)):
+            for y in range(len(data[0])):
                 if data[x][y]:
                     GL.pixel(x * pixelSize, y * pixelSize, (1.0, 1.0, 1.0, 1.0), pixelSize)
                 else:
@@ -44,23 +45,25 @@ def conwaysGameOfLife(pixelSize = 1, width = 250, height = 250, initialData = No
             if event.type == pygame.QUIT:
                 running = False
                 GL.enableScissor(False)
-
-        for x in range(int(width / pixelSize)):
-            for y in range(int(height / pixelSize)):
+        
+        newData = deepcopy(data)
+        for x in range(len(data)):
+            for y in range(len(data[0])):
                 neighbors = checkNeighbours(x, y, data)
                 
                 if data[x][y]:
                     if neighbors < 2:
-                        data[x][y] = False
+                        newData[x][y] = False
 
-                    if neighbors > 3:
-                        data[x][y] = False
+                    elif neighbors > 3:
+                        newData[x][y] = False
 
-                    if neighbors == 2 or neighbors == 3:
-                        data[x][y] = True
+                    elif neighbors == 2 or neighbors == 3:
+                        newData[x][y] = True
                         
                 elif neighbors == 3:
-                    data[x][y] = True
+                    newData[x][y] = True
+        data = newData
             
 def checkNeighbours(x, y, data):
     neighbours = 0
