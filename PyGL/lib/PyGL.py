@@ -131,7 +131,7 @@ class PyGL:
                 this.player['x'] += dirX
                 this.player['y'] += dirY
             
-    def render(this, density = 100):
+    def render(this):
         this.screen.fill(BLACK, (0, 0, this.width, this.height))
         this.screen.fill(SKY, (this.width / 2, 0, this.width, this.height / 2))
         this.screen.fill(GROUND, (this.width / 2, this.height / 2, this.width, this.height / 2))
