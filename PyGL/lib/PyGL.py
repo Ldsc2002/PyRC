@@ -2,13 +2,8 @@ import pygame
 from OpenGL.GL import *
 from math import cos, sin, pi
 
-WHITE = (1.0, 1.0, 1.0)
-BLACK = (0.0, 0.0, 0.0)
-RED = (1.0, 0.0, 0.0)
-GREEN = (0.0, 1.0, 0.0)
-BLUE = (0.0, 0.0, 1.0)
-YELLOW = (1.0, 1.0, 0.0)
-CYAN = (0.0, 1.0, 1.0)
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
 
 SKY = (40,100,200)
 GROUND = (200,200,100)
@@ -143,15 +138,6 @@ class PyGL:
 
         this.drawMap()
         this.drawPlayer()
-
-        for i in range(0,density):
-            a = this.player['a'] - this.player['fov']/2 + this.player['fov'] * i/density
-            d, c, _ = this.castRay(a)
-
-        for i in range(0,500):
-            this.pixel(499, i, WHITE)
-            this.pixel(500, i, WHITE)
-            this.pixel(501, i, WHITE)
 
         for i in range(0, int(this.width/2)):
             a = this.player['a'] - this.player['fov'] / 2 + this.player['fov'] * i / (this.width / 2)
