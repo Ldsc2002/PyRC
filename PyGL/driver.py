@@ -26,10 +26,10 @@ def runGame(file):
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT:
-                    GL.player['a'] += pi/10
+                    GL.movePlayer("right")
                 if event.key == pygame.K_LEFT:
-                    GL.player['a'] -= pi/10
+                    GL.movePlayer("left")
                 if event.key == pygame.K_UP:
-                    GL.player['y'] += 10
+                    GL.movePlayer("forward")
                 if event.key == pygame.K_DOWN:
-                    GL.player['y'] -= 10
+                    GL.movePlayer("backward")

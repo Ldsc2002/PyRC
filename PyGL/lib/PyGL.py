@@ -100,6 +100,41 @@ class PyGL:
 
             this.pixel(x, y)
             d += 1
+
+    def movePlayer(this, direction, speed = 10):
+        if direction == "left":
+            this.player['a'] -= pi/speed
+
+        elif direction == "right":
+            this.player['a'] += pi/speed
+
+        elif direction == "forward":
+            dirX = int(speed * cos(this.player['a']))
+            dirY = int(speed * sin(this.player['a']))
+
+            this.player['x'] += dirX
+            this.player['y'] += dirY
+
+            i = int(this.player['x'] / this.blockSize + dirX / this.blockSize)
+            j = int(this.player['y'] / this.blockSize + dirY / this.blockSize)
+
+            if this.map[j][i] != ' ':
+                this.player['x'] -= dirX
+                this.player['y'] -= dirY
+
+        elif direction == "backward":
+            dirX = int(speed * cos(this.player['a']))
+            dirY = int(speed * sin(this.player['a']))
+
+            this.player['x'] -= dirX
+            this.player['y'] -= dirY
+
+            i = int(this.player['x'] / this.blockSize - dirX / this.blockSize)
+            j = int(this.player['y'] / this.blockSize - dirY / this.blockSize)
+
+            if this.map[j][i] != ' ':
+                this.player['x'] += dirX
+                this.player['y'] += dirY
             
     def render(this, density = 100):
         this.screen.fill(BLACK, (0, 0, this.width, this.height))
