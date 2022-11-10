@@ -1,12 +1,13 @@
 import pygame   
 from OpenGL.GL import *
-from math import cos, sin, pi
+from math import cos, sin, pi, atan2
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
-SKY = (40,100,200)
-GROUND = (200,200,100)
+SKY = (40, 100, 200)
+GROUND = (200, 200, 100)
+TRANSPARENT = (152, 0, 136, 255)
 
 walls = {
     "1": pygame.image.load("PyGL/Assets/wall1.png"),
@@ -16,6 +17,22 @@ walls = {
     "5": pygame.image.load("PyGL/Assets/wall5.png"),
 }
 
+sprite1= pygame.image.load('PyGL/Assets/sprite1.png')
+sprite2= pygame.image.load('PyGL/Assets/sprite2.png')
+
+enemies = [
+    {
+        'x': 100,
+        'y': 150,
+        'sprite': sprite1,
+    },
+    {
+        'x': 300,
+        'y': 300,
+        'sprite': sprite2,
+    },
+]
+
 class PyGL:
     def __init__(this, width, height, blockSize = 50):
         pygame.init()
@@ -23,12 +40,18 @@ class PyGL:
         _, _, this.width, this.height = this.screen.get_rect()
         this.blockSize = blockSize
         this.map = []
+        this.zbuffer = []
         this.player = {
             'x': int(this.blockSize + this.blockSize / 2),
             'y': int(this.blockSize + this.blockSize / 2),
             'fov': int(pi/3),
             'a': int(pi/3),
         }
+
+        this.clearBuffer()
+
+    def clearBuffer(this):
+        this.zbuffer = [9999 for z in range(0,this.width)]
 
     def pixel(this, x, y, color = WHITE):
         this.screen.set_at((x, y), color)
@@ -58,6 +81,31 @@ class PyGL:
 
     def drawPlayer(this):
         this.pixel(this.player['x'],this.player['y'], WHITE)
+
+    def drawSprite(this, sprite):
+        sprite_a = atan2(sprite['y'] - this.player['y'],sprite['x'] - this.player['x'],)
+        
+        d = ((this.player['x']-sprite['x'])**2 + (this.player['y'] - sprite['y'])**2)**0.5
+
+        sprite_size = int(500/d * (500/10))
+
+        sprite_x = int(
+            500 + #offset del mapa
+            (sprite_a - this.player['a']) * 500/ this.player['fov'] 
+            + sprite_size/2
+        )
+        sprite_y = int(500/2 - sprite_size/2)
+        
+        for x in range(sprite_x,sprite_x+sprite_size):
+            for y in range(sprite_y,sprite_y+sprite_size):
+                tx = int((x - sprite_x) * 128/sprite_size)
+                ty = int((y-sprite_y) * 128/sprite_size)
+                c = sprite['sprite'].get_at((tx,ty))
+                if c != TRANSPARENT:
+                    if x > 500:
+                        if this.zbuffer[x-500] >= d:
+                            this.pixel(x,y,c)
+                            this.zbuffer[x - 500] = d
 
     def drawStake(this, x, h, c, tx):
         start_y = int(this.height/2 - h/2)
@@ -138,6 +186,7 @@ class PyGL:
 
         this.drawMap()
         this.drawPlayer()
+        this.clearBuffer()
 
         for i in range(0, int(this.width/2)):
             a = this.player['a'] - this.player['fov'] / 2 + this.player['fov'] * i / (this.width / 2)
@@ -147,7 +196,12 @@ class PyGL:
             x = int(this.width/2) + i
             h = this.height / (d * cos(a - this.player['a'])) * this.height / 10
 
-            this.drawStake(x,h,c,tx)
+            if this.zbuffer[i] >= d:
+                this.drawStake(x,h,c,tx)
+                this.zbuffer[i] = d
+
+        for enemy in enemies:
+            this.drawSprite(enemy)
 
         this.flip()
 
