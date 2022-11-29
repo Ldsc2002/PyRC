@@ -20,16 +20,19 @@ def runGame(file):
     while running:
         GL.render()
 
+        keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_ESCAPE]:
+            running = False
+        elif keys[pygame.K_w] or keys[pygame.K_UP]:
+            GL.movePlayer("forward")
+        elif keys[pygame.K_s] or keys[pygame.K_DOWN]:
+            GL.movePlayer("backward")
+        elif keys[pygame.K_a] or keys[pygame.K_LEFT]:
+            GL.movePlayer("left")
+        elif keys[pygame.K_d] or keys[pygame.K_RIGHT]:
+            GL.movePlayer("right")
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RIGHT:
-                    GL.movePlayer("right")
-                if event.key == pygame.K_LEFT:
-                    GL.movePlayer("left")
-                if event.key == pygame.K_UP:
-                    GL.movePlayer("forward")
-                if event.key == pygame.K_DOWN:
-                    GL.movePlayer("backward")
