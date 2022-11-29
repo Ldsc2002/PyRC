@@ -7,7 +7,7 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
 SKY = (40, 100, 200)
-GROUND = (200, 200, 100)
+GROUND = (100, 50, 0)
 
 walls = {
     "1": pygame.image.load("PyGL/Assets/wall1.png"),
