@@ -1,4 +1,5 @@
-import pygame   
+import pygame
+import pygame_menu
 from OpenGL.GL import *
 from math import cos, sin, pi, atan2
 
@@ -7,14 +8,12 @@ BLACK = (0, 0, 0)
 
 SKY = (40, 100, 200)
 GROUND = (200, 200, 100)
-TRANSPARENT = (152, 0, 136, 255)
 
 walls = {
     "1": pygame.image.load("PyGL/Assets/wall1.png"),
     "2": pygame.image.load("PyGL/Assets/wall2.png"),
     "3": pygame.image.load("PyGL/Assets/wall3.png"),
     "4": pygame.image.load("PyGL/Assets/wall4.png"),
-    "5": pygame.image.load("PyGL/Assets/wall5.png"),
 }
 
 class PyGL:
@@ -130,8 +129,12 @@ class PyGL:
             
     def fpsCounter(this):
         fps = str(int(this.clock.get_fps()))
-        fps_t = this.font.render(fps , 1, pygame.Color("RED"))
-        this.screen.blit(fps_t,(0,0))
+        fpsText = this.font.render(fps , 1, pygame.Color("RED"))
+        this.screen.blit(fpsText,(0, 0))
+
+    def playMusic(this, file):
+        pygame.mixer.music.load(file)
+        pygame.mixer.music.play(-1)
 
     def render(this):
         this.screen.fill(BLACK, (0, 0, this.width, this.height))

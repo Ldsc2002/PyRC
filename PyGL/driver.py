@@ -12,6 +12,33 @@ def init(width: int = 1000, height: int = 500, pixelSize: int = 50) -> None:
     GL = PyGL(width, height, pixelSize)
 
 @checkInstanceOnCall
+def menu():
+    GL.playMusic("PyGL/Assets/menu.mp3")
+
+    myimage = pygame_menu.baseimage.BaseImage(
+        image_path = "PyGL/Assets/menu.jpg",
+        drawing_mode = pygame_menu.baseimage.IMAGE_MODE_FILL,
+    )
+
+    menuTheme = pygame_menu.themes.Theme(
+        background_color = myimage,
+        title_background_color = (0, 50, 0),
+        title_font = pygame_menu.font.FONT_NEVIS,
+        title_font_size = 67,
+        widget_font = pygame_menu.font.FONT_NEVIS,
+        widget_font_color=(255, 255, 255),
+        widget_background_color=(0, 50, 0),
+        widget_padding = (10,20),
+        widget_margin = (0,20)
+    )
+                    
+    menu = pygame_menu.Menu("Minecraft", 1000, 500, theme = menuTheme)
+    menu.add.button("Nivel 1", runGame, "PyGL/Assets/level1.txt")
+    menu.add.button("Nivel 2", runGame, "PyGL/Assets/level2.txt")
+    menu.add.button("Cerrar", pygame_menu.events.EXIT)
+
+    menu.mainloop(GL.screen)
+
 def runGame(file):
     GL.loadMap(file)
 
